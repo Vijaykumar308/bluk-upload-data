@@ -1,9 +1,3 @@
-<?php
-    include "functions.php";
-    if($_COOKIE['auth-username'] != "admin"){
-        die("Your don't have permission !");
-    }
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,19 +52,13 @@
 
                             <label class="col-md-2 control-label" for="filebutton">Select Campaign<span style="color: red;font-size:16px;">*</span></label>
                             <div class="col-md-2">
-                                <select name="campaign" id="campaign" class="input-date" style="padding: 3px 1px; width:110%">
+                                  <select name="campaign" id="campaign" class="input-date" style="padding: 3px 2px;">
                                     <option value="--Select--">--Select--</option>
-                                    <option value="Happy Calling">Happy Calling</option>
-                                    <option value="samsungIB">samsungIB</option>
-                                    <option value="CUG">CUG</option>
-                                    <option value="OOW">OOW</option>
-                                    <option value="Cart Drop">Cart Drop</option>
-                                    <option value="Payment Failure/Cancellation">Payment Failure/Cancellation</option>
-                                    <option value="BYOD">BYOD</option>
-                                    <option value="Flagship">Flagship</option>
-                                    <option value="Offline">Offline</option>
-                                    <option value="Click to Call">Click to Call</option>
-                                </select>
+                                    <option value="Honda city">Honda city</option>
+                                    <option value="Auto Mobiles">Auto Mobiles</option>
+                                    <option value="Technology">Technology</option>
+                                    <option value="Cars">Cars</option>
+                                  </select>
                             </div>
 
             <label class="col-md-2 control-label" for="filebutton">Select File<span style="color: red;">*</span></label>
