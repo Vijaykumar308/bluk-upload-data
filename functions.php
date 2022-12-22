@@ -1,6 +1,7 @@
 <?php
-include 'connection.php';
-ini_set('max_execution_time', 0);
+// load the db connection files
+include 'dbconn.php';
+ini_set('max_execution_time', 0); // its has set to zero because it will take complete time to get upload data
 function pre($arr)
 {
   echo "<pre>";
@@ -56,7 +57,7 @@ if (isset($_POST["Import"])) {
     }
   }
   function header_validate($header){
-    $validHeader = array("mobile_no", "Customer Name", "Product/Device","Store","Amount","SKU/Model code", "Customer email","Pincode", "Link","Coupon Code","Additional Info1","Additional Info2");
+    $validHeader = array("mobile_no","honda_city","auto_mobiles","technology","cars");
     if($validHeader === $header){
       return 1;
     }else{
@@ -89,44 +90,19 @@ if (isset($_POST["Import"])) {
       $created_at = date('Y-m-d H:i:s');
       $modified_at = date("Y-m-d H:i:s");
 
-   /* function utc_to_ist($created_at){
-
-        $time = strtotime($created_at);
-
-        $now = date("Y-m-d H:i:s",$time);
-        
-        $new_time = date("Y-m-d H:i:s", strtotime('+5 hours 30 minutes', strtotime($now)));
-        return $new_time;
-    }
-*/
-    // $created_at = utc_to_ist($created_at);
-    // $modified_at = utc_to_ist($modified_at);
-
       if (mobileno_validate($getData[0]) && ($getData[0] != 'mobile_no')) {   
 
-        $sql = "SELECT * FROM customer where FROM_BASE64(mobile_no) = " . $getData[0];
+        $sql = "SELECT * FROM table1 where mobile_no = " . $getData[0];
         $emp_exist = mysqli_query($con, $sql);
 
         if ($emp_exist->num_rows > 0) {
           
-          $update = "UPDATE `customer` SET `id`='$id', `name`='$getData[1]', `device`='$getData[2]',
-          `store`='$getData[3]',`amount`='$getData[4]',`sku`='$getData[5]',
-          `email`='".base64_encode($getData[6])."',`pincode`='$getData[7]',
-          `link`='$getData[8]',`coupon_code`='$getData[9]',`addition_info1`='$getData[10]',`addition_info2`='$getData[11]', 
-          `modified_at`='$modified_at',`campaign`='$campaign' WHERE FROM_BASE64(`mobile_no`) = '$getData[0]'";
+          $update = "Update query, if mobile no is duplicate";
 
           $result = mysqli_query($con, $update);
 
         } else {    
-         // $sql = "INSERT into customer (id,mobile_no,name,created_at,campaign,email,handset,offer_pitch,addition_info1,addition_info2) 
-          //         values ('". $id ."','" . base64_encode($getData[0]) . "','" . $getData[1] . "','" . $created_at . "','" . $campaign . "','" . base64_encode($getData[2]) . "','" . $getData[3] . "','" . $getData[4] . "','" . $getData[5] . "','$getData[6]')"; 
-          $sql = "INSERT INTO customer (id,
-          mobile_no, name, device, store, amount, sku, email, pincode, link, coupon_code,
-          addition_info1, addition_info2,  created_at, modified_at, campaign) VALUES 
-          ('".$id."','" . base64_encode($getData[0])."', '".$getData[1]."','".$getData[2]."',
-          '".$getData[3]."','".$getData[4]."','".$getData[5]."','" . base64_encode($getData[6])."','".$getData[7]."',
-          '".$getData[8]."','".$getData[9]."','".$getData[10]."','".$getData[11]."', '".$created_at."',
-          '".$modified_at."', '".$campaign."')";
+         // $sql = "Insert query to insert data";
           $result = mysqli_query($con, $sql); 
         }
         $rownumberinCSV++;
@@ -144,7 +120,7 @@ if (isset($_POST["Import"])) {
           array_push($getData, "mobile number should be of 10 digit");
         else{
         }
-        array_splice($getData, 0,7);
+        array_splice($getData, 0,4);
         array_push($invalidData, $getData);
       }
     } //while end;
@@ -154,11 +130,11 @@ if (isset($_POST["Import"])) {
     if(!empty($invalidData)){
       invalid_csv_data($invalidData);
     }else{
-        echo "Data inserted successfully";
-      // echo "<script type=\"text/javascript\">
-      //     alert(\"Data inserted succesfully.\");
-      //     window.location = \"index.php\"
-      // </script>";
+      //  echo "Data inserted successfully";
+      echo "<script type=\"text/javascript\">
+          alert(\"Data inserted succesfully.\");
+          window.location = \"index.php\"
+      </script>";
     }
   }else{
     echo "<script type=\"text/javascript\">
@@ -177,7 +153,7 @@ if (isset($_GET['download'])) {
   // Create a file pointer 
   $f = fopen("php://memory", "w");
 
-  $csvheaders = array("mobile_no", "Customer Name", "Product/Device","Store","Amount","SKU/Model code", "Customer email","Pincode", "Link","Coupon Code","Additional Info1","Additional Info2");
+  $csvheaders = array("mobile_no","honda_city","auto_mobiles","technology","cars");
   fputcsv($f, $csvheaders, $delimiter);
 
   // Move back to beginning of file 
@@ -220,16 +196,15 @@ function invalid_csv_data($array)
 function get_all_records()
 {
   $con = getdb();
-  $Sql = "SELECT * , FROM_BASE64(mobile_no) as mobile_nos, FROM_BASE64(email) as emails FROM customer";
+  $Sql = "select * from table2 WHERE campaign = '$campaign'";
   $result = mysqli_query($con, $Sql);
 
 
   if (mysqli_num_rows($result) > 0) {
     echo "<div class='table-responsive'><table id='myTable' class='table table-striped table-bordered'>
-          <thead><tr><th>EMP ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
+          <thead><tr><th>Auto Mobiles</th>
+            <th>Cars</th>
+            <th>Technology</th>
             <th>Registration Date</th>
           </tr></thead><tbody>";
 
@@ -237,10 +212,10 @@ function get_all_records()
     while ($row = mysqli_fetch_assoc($result)) {
 
       echo "<tr><td>" . $row['mobile_nos'] . "</td>
-                       <td>" . $row['name'] . "</td>
-                       <td>" . $row['campaign'] . "</td>
-                       <td>" . $row['emails'] . "</td>
-                       <td>" . $row['reg_date'] . "</td></tr>";
+                       <td>" . $row['auto_mobile'] . "</td>
+                       <td>" . $row['Cars'] . "</td>
+                       <td>" . $row['Technology'] . "</td>
+                       <td>" . $row['created_at'] . "</td></tr>";
     }
 
     echo "</tbody></table></div>";
